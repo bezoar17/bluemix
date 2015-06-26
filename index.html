@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+<script type="text/javascript" src="fabric.js"></script>
+  <script type="text/javascript" src="jquery.js"></script>
+  <!-- // <script type="text/javascript" src="trianglify.js"></script> -->
+  <script type="text/javascript" src="geopattern.js"></script>
+
+
+<body style="margin:0px;">
+<canvas id="c" width="350" height="500" style="position:absolute;z-index:3;">
+</canvas>
+<!-- <canvas id="layer1" width=window.innerWidth height=window.innerHeight style="position:absolute;left:0px;top:0px;z-index:1;">
+</canvas> -->
+<canvas id="layer2" width=window.innerWidth height=window.innerHeight style="position:absolute;left:0px;top:0px;z-index:2">
+</canvas>
+<script type="text/javascript">
+	// var colorFunc = function(x, y) {
+	//     return 'hsl('+Math.floor(Math.abs(x*y)*360)+',80%,60%)';
+	// };	
+	// var tri=document.getElementById('layer1');
+	// var pattern = Trianglify({
+ //        width:window.innerWidth, 
+ //        height: window.innerHeight        
+ //    });
+	// console.log(pattern.opts);
+ //    document.body.appendChild(pattern.canvas(tri));
+    var pattern = GeoPattern.generate('ab');
+    $('body').css('background-image', pattern.toDataUrl());
+
+</script>
+<script type="text/javascript" src="mem_max.js"></script>
+</body>
+</html>
