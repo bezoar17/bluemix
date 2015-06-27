@@ -17,35 +17,114 @@ levels.push(new new_level(0,0,0,5));//dummy
 levels.push(new new_level(1,4,4,6));
 levels.push(new new_level(2,4,5,7));
 levels.push(new new_level(3,4,5,8));
-levels.push(new new_level(4,5,7,9));
-levels.push(new new_level(5,5,7,10));
-levels.push(new new_level(6,5,7,11));
+levels.push(new new_level(4,4,5,9));
+levels.push(new new_level(5,4,5,10));
+levels.push(new new_level(6,4,5,11));
 levels.push(new new_level(7,5,7,12));
-levels.push(new new_level(8,6,8,13));
-levels.push(new new_level(9,6,8,14));
-levels.push(new new_level(10,6,8,15));
-levels.push(new new_level(11,6,8,16));
-levels.push(new new_level(12,7,9,17));
-levels.push(new new_level(13,7,9,18));
-levels.push(new new_level(14,7,9,19));
-levels.push(new new_level(15,7,9,20));
+levels.push(new new_level(8,5,7,13));
+levels.push(new new_level(9,5,7,14));
+levels.push(new new_level(10,6,7,15));
+levels.push(new new_level(11,6,7,16));
+levels.push(new new_level(12,6,7,17));
+levels.push(new new_level(13,6,7,18));
+levels.push(new new_level(14,6,7,19));
+levels.push(new new_level(15,6,7,20));
 
-var show_time=1;
+var score=0;
 var canvas = new fabric.Canvas('c');
 //goto line 8424 for changing the style 
 var ans_tiles;var turns;
-var current_level;
-var colour1='red';
-var colour2='blue';
-
+var current_level;var random_colour;
+var tile_colours=[];var done_tiles;
+var fonts=[];
+fonts.push('Comfortaa');
+fonts.push('Orbitron');
+fonts.push('Eater');
+fonts.push('Quicksand');
+var hints=4;
+function new_colour(colour1,colour2)
+{
+	this.colour1=colour1;
+	this.colour2=colour2;
+}
+tile_colours.push(new new_colour('#FF5714','#6EEB83'));
+tile_colours.push(new new_colour('#50514F','#70C1B3'));
+tile_colours.push(new new_colour('#FFBF00','#FFFFFF'));
+tile_colours.push(new new_colour('#FF686B','#FFFFFF'));
+tile_colours.push(new new_colour('#0B132B','#6FFFE9'));
+tile_colours.push(new new_colour('#083D77','#F95738'));
+tile_colours.push(new new_colour('#0B132B','#6FFFE9'));
+tile_colours.push(new new_colour('#513B56','#BCE784'));
+tile_colours.push(new new_colour('#42D9C8','#931621'));
+var reloadButton  = document.querySelector( '.reload' );
+	var reloadSvg     = document.querySelector( 'svg' );
+	var reloadEnabled = true;
+	var rotation      = 0;
+	// Events
+	$("#reload_button").click(function(){
+		reloadClick();		
+	});
+$("#hint_button").click(function()
+{
+	if(hints!=0)
+	{
+		//reducing points for reloading
+	  	// if(current_level!=1)
+				//  {
+				//  	score=score-1250;
+				//  }
+		//end of points
+		hint_turn(take_input);
+	}
+	else
+	{
+		//gameover
+		end_game();
+	}	
+});
+// Functions
+function reloadClick() 
+	{
+	  reloadEnabled = false;
+	  rotation -= 180;  
+	  // Eh, this works.
+	  reloadSvg.style.webkitTransform = 'translateZ(0px) rotateZ( ' + rotation + 'deg )';
+	  reloadSvg.style.MozTransform  = 'translateZ(0px) rotateZ( ' + rotation + 'deg )';
+	  reloadSvg.style.transform  = 'translateZ(0px) rotateZ( ' + rotation + 'deg )';
+	  if(hints!=0)
+	  {
+	  	//reducing points for reloading
+	  	if(current_level!=1)
+				 {
+				 	score=score-200-(current_level-1)*1000;
+				 }
+		//end of points
+	  	setTimeout(function() {
+	    level_show(levels[current_level]);
+							}, 400);	
+	  }
+	  else
+	  {
+	  	score=0;hints=4;
+	  	canvas.clear();
+	  	$("#levelsh").hide();
+		$("#reload_button").hide();
+		$("#hint_button").hide();
+		$("#startbutton").fadeIn();
+	  }
+	  
+	}
+ 
 $.fn.multiline = function(text){
     this.text(text);
-    this.html(this.html().replace(/\n/g,'<br/>'));
+    this.html(text.replace(/\n/g,'<br/>'));
     return this;
 }
 function level_show(level)
 {	
 	//Background generation
+	$("#reload_button").hide();
+	$("#hint_button").hide();
 	canvas.clear();
 	canvas.calcOffset();
 	var random_check=Math.floor(Math.random()*100);
@@ -64,8 +143,12 @@ function level_show(level)
 	    $('body').css('background-image',pattern.toDataUrl());
 	}
 	current_level=level.level_no;
-	$("#levelsh").multiline("Level\n"+current_level);
-	$("#levelsh").fadeIn("slow",function(){setTimeout(function(){ $("#levelsh").fadeOut("slow",function(){pre_show(level);});},2000);});	
+	score = score + (current_level-1)*1000;	
+	if(score<0) score=0;
+	//random font
+	$("#levelsh").css({'font-family':fonts[getRandomPos(0,3)]});
+	$("#levelsh").multiline("<small>"+"Level "+current_level+"\n"+level.no_of_tiles+" Tiles\n"+"Score "+score+"</small>");
+	$("#levelsh").fadeIn("fast",function(){setTimeout(function(){ $("#levelsh").fadeOut("slow",function(){pre_show(level);});},2000);});	
 	
 }
 function pre_show(level)
@@ -109,43 +192,57 @@ function show(level)
 		else
 			{l=(i%level.columns-1)*55;t=Math.floor(i/level.columns)*55;}
 		if(ans_tiles.indexOf(i)==-1)
-				tile.set('fill',colour1);
+				tile.set('fill',tile_colours[random_colour].colour1);
 		else
-				tile.set('fill',colour2);
+				tile.set('fill',tile_colours[random_colour].colour2);
 		tile.set({left:l+25+5,top:t+25+5,originX:'center',originY:'center'});
 		tile.selectable=false;
 		canvas.add(tile);
 	};
 	//make allcolour2
-	canvas.renderAll();
-	setTimeout(function(){ take_input(level);},1000);
+	canvas.renderAll();	
+	setTimeout(function(){ take_input(level);},level.no_of_tiles*200+500);
 	//take_input(level);
 }
 function take_input(level)
 {
 	//check if its ans tiles or not and increase counter for chances
-	turns=level.no_of_tiles;
-	var done_tiles=[];
+	if(hints!=0) {$("#hint_button").text("Hints ("+(hints)+")");}
+	else {$("#hint_button").text("Game Over");}
+	if(level.no_of_tiles==ans_tiles.length)
+		{
+			turns=level.no_of_tiles;done_tiles=[];
+		}	
 	for (var i = 0; i < ans_tiles.length; i++) 
 		{
 			if(i==ans_tiles.length-1)
 				{
 					canvas.item(ans_tiles[i]-1).animate('opacity', 0, {onChange: canvas.renderAll.bind(canvas),duration:200,onComplete:function(){ 
 						for (var i = 0; i < ans_tiles.length; i++) {
-							canvas.item(ans_tiles[i]-1).set({opacity:1,fill:colour1});
+							canvas.item(ans_tiles[i]-1).set({opacity:1,fill:tile_colours[random_colour].colour1});
 						};
 					 canvas.renderAll();
+					if(level.no_of_tiles==ans_tiles.length)
+						{
+							$("#reload_button").show();
+							$("#hint_button").css({'left':'85%'});
+							$("#hint_button").show();
+						}
+
 				     }});
 				}
 				else
 				{canvas.item(ans_tiles[i]-1).animate('opacity', 0, {onChange: canvas.renderAll.bind(canvas),duration:200});}			
 		};
 	canvas.renderAll();
+	console.log("reached");
 	canvas.on('mouse:down', function(options) 
 	{	  
+		console.log("totally reached");
 	  if (options.target) 
 	  {
-	  	console.log(turns);
+	  	if(turns==level.no_of_tiles)
+	  		{$("#reload_button").hide();$("#hint_button").css({'left':'50%'});}//if one input received refresh option vanishes
 	  	if(options.target.type=='rect')
 	    {
 	    	var pos=ans_tiles.indexOf(options.target.tile_number);
@@ -153,6 +250,7 @@ function take_input(level)
 	    	{
 	    		//flash a cross
 	    		$("#input_res").fadeIn("fast",function(){$("#input_res").fadeOut("fast");});
+	    		Materialize.toast('Wrong Tile',500);
 	    		turns--;
 	    	}
 	    	else
@@ -163,7 +261,7 @@ function take_input(level)
 	    		options.target.animate('angle', 180, {
 				  onChange: canvas.renderAll.bind(canvas),
 				  duration: 200,
-				  onComplete: function(){options.target.set('fill',colour2);
+				  onComplete: function(){options.target.set('fill',tile_colours[random_colour].colour2);
 				  canvas.renderAll();}
 				});
 				canvas.renderAll();
@@ -184,13 +282,16 @@ function take_input(level)
 				 while(ans_tiles.length)
 				 {
 				 	//animate it
-				 	canvas.item(ans_tiles[0]-1).set({opacity:1,fill:colour2});
+				 	canvas.item(ans_tiles[0]-1).set({opacity:1,fill:tile_colours[random_colour].colour2});
 				 	ans_tiles.splice(0,1);				 	
 				 }
 				 canvas.renderAll();
-
 				 if(level.level_no!=1)
-				 setTimeout(function(){ level_show(levels[level.level_no-1]);},2000);
+				 {
+				 	if(level.level_no==2) score=score-500;
+				 	else score=score-500-1000*(current_level-2);
+				 	setTimeout(function(){ level_show(levels[level.level_no-1]);},2000);
+				 }
 				 else
 				 setTimeout(function(){ level_show(levels[1]);},2000);
 				}
@@ -201,8 +302,39 @@ function take_input(level)
 }
 $(function()
 {
+		// Vars
 	$("#input_res").hide();
-	$("#startbutton").click(function(){$("#startbutton").fadeOut("slow",function(){level_show(levels[1]);});});	
+	$("#reload_button").hide();
+	$("#hint_button").hide();
+	$("#startbutton").click(function(){$("#startbutton").fadeOut("slow",function(){random_colour=getRandomPos(0,8);level_show(levels[1]);});});	
+	
 });
-
-
+function hint_turn(take_input)
+{
+	canvas.off('mouse:down');
+	for (var i = 0; i < ans_tiles.length; i++) 
+		{
+			if(i==ans_tiles.length-1)
+				{
+					canvas.item(ans_tiles[i]-1).animate('opacity', 0, {onChange: canvas.renderAll.bind(canvas),duration:200,onComplete:function(){ 
+						for (var i = 0; i < ans_tiles.length; i++) {
+							canvas.item(ans_tiles[i]-1).set({opacity:1,fill:tile_colours[random_colour].colour2});
+						};
+					 canvas.renderAll();
+					 }});
+				}
+				else
+				{canvas.item(ans_tiles[i]-1).animate('opacity', 0, {onChange: canvas.renderAll.bind(canvas),duration:200});}			
+		};
+	canvas.renderAll();hints--;
+	setTimeout(function(){take_input(levels[current_level]);},levels[current_level].no_of_tiles*200+500);
+}
+function end_game()
+{
+	canvas.clear();
+	canvas.off('mouse:down');$("#hint_button").hide();
+	//show game over ,score and replay sign;
+	$("#levelsh").css({'font-family':fonts[getRandomPos(0,3)]});
+	$("#levelsh").multiline("Game Over\n"+"Score "+score);
+	$("#levelsh").fadeIn("slow");$("#reload_button").fadeIn();$("#hint_button").css({'left':'85%'});
+}
