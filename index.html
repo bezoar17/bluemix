@@ -2,36 +2,247 @@
 <html>
 <head>
 	<title></title>
+	<link href='http://fonts.googleapis.com/css?family=Quicksand:700|Orbitron:700' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Eater|Comfortaa:700' rel='stylesheet' type='text/css'>
+	<style type="text/css">
+			@import url(http://fonts.googleapis.com/css?family=Squada+One);
+			a {
+			  display: block;
+			  width: 220px;
+			  height: 70px;
+			  z-index: 50;
+			}
+			a:hover{
+				cursor: pointer;
+			}
+			a:after {
+			  content: '';
+			  background: linear-gradient(120deg, #6559ae, #ff7159, #6559ae);
+			  background-size: 400% 400%;
+			  -webkit-clip-path: polygon(0% 100%, 4px 100%, 4px 4px, 216px 4px, 216px 66px, 4px 66px, 4px 100%, 100% 100%, 100% 0%, 0% 0%);
+			  -moz-animation: gradient 3s ease-in-out infinite, border 1s forwards ease-in-out reverse;
+			  -webkit-animation: gradient 3s ease-in-out infinite, border 1s forwards ease-in-out reverse;
+			  animation: gradient 3s ease-in-out infinite, border 1s forwards ease-in-out reverse;
+			}
+			a > span {
+			  display: block;
+			  background: linear-gradient(120deg, #6559ae, #ff7159, #6559ae);
+			  background-size: 400% 400%;
+			  -webkit-background-clip: text;
+			  -webkit-text-fill-color: transparent;
+			  -moz-animation: gradient 3s ease-in-out infinite;
+			  -webkit-animation: gradient 3s ease-in-out infinite;
+			  animation: gradient 3s ease-in-out infinite;
+			}
+
+			/* helpers */
+			.absolute-centering, body:after, a, a:after {
+			  position: absolute;
+			  top: 0;
+			  left: 0;
+			  right: 0;
+			  bottom: 0;
+			  margin: auto;
+			}
+
+			.text-formatting, a {
+			  text-transform: uppercase;
+			  text-decoration: none;
+			  text-align: center;
+			  letter-spacing: 2px;
+			  line-height: 70px;
+			  font-family: 'Squada One', cursive;
+			  font-size: 40px;
+			}
+
+			/* motion */
+			@-moz-keyframes gradient {
+			  0% {
+			    background-position: 14% 0%;
+			  }
+			  50% {
+			    background-position: 87% 100%;
+			  }
+			  100% {
+			    background-position: 14% 0%;
+			  }
+			}
+			@-webkit-keyframes gradient {
+			  0% {
+			    background-position: 14% 0%;
+			  }
+			  50% {
+			    background-position: 87% 100%;
+			  }
+			  100% {
+			    background-position: 14% 0%;
+			  }
+			}
+			@keyframes gradient {
+			  0% {
+			    background-position: 14% 0%;
+			  }
+			  50% {
+			    background-position: 87% 100%;
+			  }
+			  100% {
+			    background-position: 14% 0%;
+			  }
+			}
+			@-moz-keyframes border {
+			  0% {
+			    -webkit-clip-path: polygon(0% 100%, 4px 100%, 4px 4px, 216px 4px, 216px 66px, 4px 66px, 4px 100%, 100% 100%, 100% 0%, 0% 0%);
+			  }
+			  25% {
+			    -webkit-clip-path: polygon(0% 100%, 4px 100%, 4px 4px, 216px 4px, 216px 66px, 216px 66px, 216px 100%, 100% 100%, 100% 0%, 0% 0%);
+			  }
+			  50% {
+			    -webkit-clip-path: polygon(0% 100%, 4px 100%, 4px 4px, 216px 4px, 216px 4px, 216px 4px, 216px 4px, 216px 4px, 100% 0%, 0% 0%);
+			  }
+			  75% {
+			    -webkit-clip-path: polygon(0% 100%, 4px 100%, 4px 4px, 4px 4px, 4px 4px, 4px 4px, 4px 4px, 4px 4px, 4px 0%, 0% 0%);
+			  }
+			  100% {
+			    -webkit-clip-path: polygon(0% 100%, 4px 100%, 4px 100%, 4px 100%, 4px 100%, 4px 100%, 4px 100%, 4px 100%, 4px 100%, 0% 100%);
+			  }
+			}
+			@-webkit-keyframes border {
+			  0% {
+			    -webkit-clip-path: polygon(0% 100%, 4px 100%, 4px 4px, 216px 4px, 216px 66px, 4px 66px, 4px 100%, 100% 100%, 100% 0%, 0% 0%);
+			  }
+			  25% {
+			    -webkit-clip-path: polygon(0% 100%, 4px 100%, 4px 4px, 216px 4px, 216px 66px, 216px 66px, 216px 100%, 100% 100%, 100% 0%, 0% 0%);
+			  }
+			  50% {
+			    -webkit-clip-path: polygon(0% 100%, 4px 100%, 4px 4px, 216px 4px, 216px 4px, 216px 4px, 216px 4px, 216px 4px, 100% 0%, 0% 0%);
+			  }
+			  75% {
+			    -webkit-clip-path: polygon(0% 100%, 4px 100%, 4px 4px, 4px 4px, 4px 4px, 4px 4px, 4px 4px, 4px 4px, 4px 0%, 0% 0%);
+			  }
+			  100% {
+			    -webkit-clip-path: polygon(0% 100%, 4px 100%, 4px 100%, 4px 100%, 4px 100%, 4px 100%, 4px 100%, 4px 100%, 4px 100%, 0% 100%);
+			  }
+			}
+			@keyframes border {
+			  0% {
+			    -webkit-clip-path: polygon(0% 100%, 4px 100%, 4px 4px, 216px 4px, 216px 66px, 4px 66px, 4px 100%, 100% 100%, 100% 0%, 0% 0%);
+			  }
+			  25% {
+			    -webkit-clip-path: polygon(0% 100%, 4px 100%, 4px 4px, 216px 4px, 216px 66px, 216px 66px, 216px 100%, 100% 100%, 100% 0%, 0% 0%);
+			  }
+			  50% {
+			    -webkit-clip-path: polygon(0% 100%, 4px 100%, 4px 4px, 216px 4px, 216px 4px, 216px 4px, 216px 4px, 216px 4px, 100% 0%, 0% 0%);
+			  }
+			  75% {
+			    -webkit-clip-path: polygon(0% 100%, 4px 100%, 4px 4px, 4px 4px, 4px 4px, 4px 4px, 4px 4px, 4px 4px, 4px 0%, 0% 0%);
+			  }
+			  100% {
+			    -webkit-clip-path: polygon(0% 100%, 4px 100%, 4px 100%, 4px 100%, 4px 100%, 4px 100%, 4px 100%, 4px 100%, 4px 100%, 0% 100%);
+			  }
+			}
+			a >span
+			{
+			 position: fixed;
+			  top: 50%;
+			  left: 50%;
+			  /* bring your own prefixes */
+			  transform: translate(-50%, -50%);
+			}
+			body {
+			    	background-image: url("http://fc02.deviantart.net/fs71/f/2012/180/5/8/ios_linen__system_background__by_glitchking123-d558qvb.jpg");
+			    
+			}
+			.close {
+					  display: inline-block;
+					  -webkit-box-sizing: content-box;
+					  -moz-box-sizing: content-box;
+					  box-sizing: content-box;
+					  width: 0.5em;
+					  height: 0.5em;
+					  position: relative;
+					  border: none;
+					  -webkit-border-radius: 1em;
+					  border-radius: 1em;
+					  font: normal 8em/normal Arial, Helvetica, sans-serif;
+					  color: rgba(0,0,0,1);
+					  -o-text-overflow: clip;
+					  text-overflow: clip;
+					  background: rgba(247,0,0,1);
+					  -webkit-transform: rotateZ(471.54426539266757deg)   ;
+					  transform: rotateZ(471.54426539266757deg)   ;
+					}
+
+			.close:active {
+			  background: #1abc9c;
+			  -webkit-box-shadow: 2px 2px 9px 1px rgba(0,0,0,0.5) inset;
+			  box-shadow: 2px 2px 9px 1px rgba(0,0,0,0.5) inset;
+			  -webkit-transition: none;
+			  -moz-transition: none;
+			  -o-transition: none;
+			  transition: none;
+			  -webkit-transform: rotateZ(471.54426539266757deg)   ;
+			  transform: rotateZ(471.54426539266757deg)   ;
+			}
+			.close::before {
+			  display: inline-block;
+			  -webkit-box-sizing: content-box;
+			  -moz-box-sizing: content-box;
+			  box-sizing: content-box;
+			  width: 0.3em;
+			  height: 0.05em;
+			  position: absolute;
+			  content: "";
+			  top: 0.23em;
+			  left: .1em;
+			  border: none;
+			  font: normal 100%/normal Arial, Helvetica, sans-serif;
+			  color: rgba(0,0,0,1);
+			  -o-text-overflow: clip;
+			  text-overflow: clip;
+			  background: #ffffff;
+			  text-shadow: none;
+			  -webkit-transform: rotateZ(24.064227395494576deg)   ;
+			  transform: rotateZ(24.064227395494576deg)   ;
+			}
+			.close::after {
+			  display: inline-block;
+			  -webkit-box-sizing: content-box;
+			  -moz-box-sizing: content-box;
+			  box-sizing: content-box;
+			  width: 0.3em;
+			  height: 0.05em;
+			  position: absolute;
+			  content: "";
+			  top: 0.23em;
+			  left: .1em;
+			  border: none;
+			  font: normal 100%/normal Arial, Helvetica, sans-serif;
+			  color: rgba(0,0,0,1);
+			  -o-text-overflow: clip;
+			  text-overflow: clip;
+			  background: #ffffff;
+			  text-shadow: none;
+			  -webkit-transform: rotateZ(-66.46310423517549deg)   ;
+			  transform: rotateZ(-66.46310423517549deg)   ;
+			}
+	</style>
 </head>
 <body>
 <script type="text/javascript" src="fabric.js"></script>
   <script type="text/javascript" src="jquery.js"></script>
-  <!-- // <script type="text/javascript" src="trianglify.js"></script> -->
+ <script type="text/javascript" src="trianglify.js"></script>
   <script type="text/javascript" src="geopattern.js"></script>
 
-
 <body style="margin:0px;">
-<canvas id="c" width="350" height="500" style="position:absolute;z-index:3;">
+<div align="center">  
+  <div class="close" id="input_res"></div>
+  </div>
+<canvas id="c" width="350" height="500" style="position:absolute;z-index:100;">
 </canvas>
-<!-- <canvas id="layer1" width=window.innerWidth height=window.innerHeight style="position:absolute;left:0px;top:0px;z-index:1;">
-</canvas> -->
-<canvas id="layer2" width=window.innerWidth height=window.innerHeight style="position:absolute;left:0px;top:0px;z-index:2">
-</canvas>
-<script type="text/javascript">
-	// var colorFunc = function(x, y) {
-	//     return 'hsl('+Math.floor(Math.abs(x*y)*360)+',80%,60%)';
-	// };	
-	// var tri=document.getElementById('layer1');
-	// var pattern = Trianglify({
- //        width:window.innerWidth, 
- //        height: window.innerHeight        
- //    });
-	// console.log(pattern.opts);
- //    document.body.appendChild(pattern.canvas(tri));
-    var pattern = GeoPattern.generate('ab');
-    $('body').css('background-image', pattern.toDataUrl());
+<div id="levelsh" style="position:absolute;left:50%;top:50%;font-family:'Quicksand',serif;text-align:center;font-weight:400;color:white;font-size:100px;z-index:10;transform: translate(-50%, -50%);">
 
-</script>
+</div>
+<a id="startbutton"><span>Start</span></a>	
 <script type="text/javascript" src="mem_max.js"></script>
 </body>
 </html>

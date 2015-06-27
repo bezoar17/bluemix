@@ -8421,7 +8421,10 @@ fabric.PatternBrush = fabric.util.createClass(fabric.PencilBrush, /** @lends fab
       fabric.util.setStyle(this.wrapperEl, {
         width: this.getWidth() + 'px',
         height: this.getHeight() + 'px',
-        position: 'relative'
+        position: 'absolute',
+        top:'50%',
+        left:'50%',
+        transform: 'translate(-50%, -50%)'
       });
       fabric.util.makeElementUnselectable(this.wrapperEl);
     },

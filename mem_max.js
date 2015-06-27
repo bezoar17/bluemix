@@ -5,7 +5,7 @@
 function getRandomPos(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-function new_level(level_no,rows,columns,no_of_tiles)
+function new_level(level_no,columns,rows,no_of_tiles)
 {
 	this.level_no=level_no;
 	this.rows=rows;
@@ -35,33 +35,48 @@ var canvas = new fabric.Canvas('c');
 //goto line 8424 for changing the style 
 var ans_tiles;var turns;
 var current_level;
+var colour1='red';
+var colour2='blue';
 
+$.fn.multiline = function(text){
+    this.text(text);
+    this.html(this.html().replace(/\n/g,'<br/>'));
+    return this;
+}
 function level_show(level)
 {	
-	current_level=level.level_no;
+	//Background generation
 	canvas.clear();
 	canvas.calcOffset();
-	var show_level = new fabric.Text("Level\n"+current_level, {
-		  fontSize: 40,
-		  fontFamily: 'Comic Sans',
-		  fontWeight:'bold',
-		  textAlign:'center',
-		  lineHeight:2
-		});
-	show_level.selectable=false;
-	canvas.add(show_level);canvas.renderAll();
-	setTimeout(function(){ pre_show(level);},4000);
+	var random_check=Math.floor(Math.random()*100);
+	if(random_check%2==0)
+	{
+		var pattern = Trianglify({
+	        width:window.innerWidth, 
+	        height: window.innerHeight        
+	    });
+		$('body').css('background-image','url("'+pattern.png()+'")');
+	}
+	else
+	{
+		var gen=Math.random().toString(36).substring(7);
+ 	   	var pattern = GeoPattern.generate(gen);
+	    $('body').css('background-image',pattern.toDataUrl());
+	}
+	current_level=level.level_no;
+	$("#levelsh").multiline("Level\n"+current_level);
+	$("#levelsh").fadeIn("slow",function(){setTimeout(function(){ $("#levelsh").fadeOut("slow",function(){pre_show(level);});},2000);});	
+	
 }
 function pre_show(level)
 {
 	canvas.clear();
 	canvas.backgroundColor = "rgba(31,31,33,0)";
 	//calculate positions based on level 
-	canvas.setWidth(55*level.columns-5);
-	canvas.setHeight(55*level.rows-5);
+	canvas.setWidth(55*level.columns+5);
+	canvas.setHeight(55*level.rows+5);
 	canvas.calcOffset();
 	canvas.off('mouse:down');
-	
 	//show level
 	ans_tiles=[];var rand;
 	while(ans_tiles.length!=level.no_of_tiles)
@@ -94,26 +109,36 @@ function show(level)
 		else
 			{l=(i%level.columns-1)*55;t=Math.floor(i/level.columns)*55;}
 		if(ans_tiles.indexOf(i)==-1)
-				tile.set('fill','red');
+				tile.set('fill',colour1);
 		else
-				tile.set('fill','blue');
-		tile.set({left:l,top:t});
+				tile.set('fill',colour2);
+		tile.set({left:l+25+5,top:t+25+5,originX:'center',originY:'center'});
 		tile.selectable=false;
 		canvas.add(tile);
 	};
-	//make all blue;
-	setTimeout(function(){ take_input(level);},4000);
+	//make allcolour2
+	canvas.renderAll();
+	setTimeout(function(){ take_input(level);},1000);
 	//take_input(level);
 }
-
 function take_input(level)
 {
 	//check if its ans tiles or not and increase counter for chances
 	turns=level.no_of_tiles;
-	for (var i = 0; i < level.rows*level.columns; i++) 
+	var done_tiles=[];
+	for (var i = 0; i < ans_tiles.length; i++) 
 		{
-			//animate this
-			canvas.item(i).set('fill','red');
+			if(i==ans_tiles.length-1)
+				{
+					canvas.item(ans_tiles[i]-1).animate('opacity', 0, {onChange: canvas.renderAll.bind(canvas),duration:200,onComplete:function(){ 
+						for (var i = 0; i < ans_tiles.length; i++) {
+							canvas.item(ans_tiles[i]-1).set({opacity:1,fill:colour1});
+						};
+					 canvas.renderAll();
+				     }});
+				}
+				else
+				{canvas.item(ans_tiles[i]-1).animate('opacity', 0, {onChange: canvas.renderAll.bind(canvas),duration:200});}			
 		};
 	canvas.renderAll();
 	canvas.on('mouse:down', function(options) 
@@ -124,48 +149,60 @@ function take_input(level)
 	  	if(options.target.type=='rect')
 	    {
 	    	var pos=ans_tiles.indexOf(options.target.tile_number);
-	    	if(pos==-1)
+	    	if(pos==-1 && done_tiles.indexOf(options.target.tile_number)==-1)
 	    	{
 	    		//flash a cross
-	    		alert("wrong");
+	    		$("#input_res").fadeIn("fast",function(){$("#input_res").fadeOut("fast");});
+	    		turns--;
 	    	}
 	    	else
 	    	{
-	    		//turn the rect blue
-	    		options.target.animate('angle', 720, {
+	    		if(done_tiles.indexOf(options.target.tile_number)==-1)
+	    		{
+	    		turns--;
+	    		options.target.animate('angle', 180, {
 				  onChange: canvas.renderAll.bind(canvas),
-				  duration: 1000,
-				  easing: fabric.util.ease.easeOutBounce
+				  duration: 200,
+				  onComplete: function(){options.target.set('fill',colour2);
+				  canvas.renderAll();}
 				});
-				options.target.set('fill','blue');
 				canvas.renderAll();
+				done_tiles.push(ans_tiles[pos]);
 				ans_tiles.splice(pos,1);
+				}	    		
 	    	}
-	    	turns--;
 	    	if(turns==0)
 	    	{	
 	    		//end    
-	    		console.log('cuurent level' + level.level_no)		
-				if(ans_tiles.length==0)
+	    		if(ans_tiles.length==0)
 				{
-					setTimeout(function(){ tlevel_show(levels[level.level_no+1]);},1500);					
+					setTimeout(function(){ level_show(levels[level.level_no+1]);},2000);					
 				}
 				else
 				{
-				 //remaining ones have to be changed
+				 //remaining ones have to be changed				
 				 while(ans_tiles.length)
 				 {
-				 	//animate it 
-				 	canvas.item(ans_tiles[0]).set('fill','blue');
-				 	ans_tiles.splice(0,1);
-				 	canvas.renderAll();
+				 	//animate it
+				 	canvas.item(ans_tiles[0]-1).set({opacity:1,fill:colour2});
+				 	ans_tiles.splice(0,1);				 	
 				 }
-				 setTimeout(function(){ tlevel_show(levels[level.level_no]);},1500);
+				 canvas.renderAll();
+
+				 if(level.level_no!=1)
+				 setTimeout(function(){ level_show(levels[level.level_no-1]);},2000);
+				 else
+				 setTimeout(function(){ level_show(levels[1]);},2000);
 				}
 	    	}
 	    }
 	  }
 	});	
 }
+$(function()
+{
+	$("#input_res").hide();
+	$("#startbutton").click(function(){$("#startbutton").fadeOut("slow",function(){level_show(levels[1]);});});	
+});
 
-level_show(levels[1]);
+
