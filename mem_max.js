@@ -110,6 +110,7 @@ function reloadClick()
 	  	$("#levelsh").hide();
 		$("#reload_button").hide();
 		$("#hint_button").hide();
+		$('body').css('background-image','url("back_default.jpg")');
 		$("#startbutton").fadeIn();
 	  }
 	  
@@ -154,7 +155,7 @@ function level_show(level)
 function pre_show(level)
 {
 	canvas.clear();
-	canvas.backgroundColor = "rgba(31,31,33,0)";
+	// canvas.backgroundColor = "rgba(256,256,256,0.8)";
 	//calculate positions based on level 
 	canvas.setWidth(55*level.columns+5);
 	canvas.setHeight(55*level.rows+5);
@@ -249,8 +250,8 @@ function take_input(level)
 	    	if(pos==-1 && done_tiles.indexOf(options.target.tile_number)==-1)
 	    	{
 	    		//flash a cross
-	    		$("#input_res").fadeIn("fast",function(){$("#input_res").fadeOut("fast");});
-	    		Materialize.toast('Wrong Tile',500);
+	    		$("#input_res").fadeIn(300,function(){$("#input_res").fadeOut("fast");});
+	    		// Materialize.toast('Wrong Tile',500);
 	    		turns--;
 	    	}
 	    	else
@@ -335,6 +336,7 @@ function end_game()
 	canvas.off('mouse:down');$("#hint_button").hide();
 	//show game over ,score and replay sign;
 	$("#levelsh").css({'font-family':fonts[getRandomPos(0,3)]});
+	$("#levelsh").css({'line-height':'90%'});
 	$("#levelsh").multiline("Game Over\n"+"Score "+score);
 	$("#levelsh").fadeIn("slow");$("#reload_button").fadeIn();$("#hint_button").css({'left':'85%'});
 }
