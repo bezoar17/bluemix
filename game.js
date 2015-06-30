@@ -47,6 +47,7 @@ levels.push(new new_level(14,6,6,19));
 levels.push(new new_level(15,6,6,20));
 
 var score=0;
+var audio_playing;
 var game_over=0;
 var canvas = new fabric.Canvas('c');
 //goto line 8424 for changing the style 
@@ -62,11 +63,7 @@ var hints=4;
 *
 */
 var fonts=[];
-fonts.push('Comfortaa');
-fonts.push('Orbitron');
-fonts.push('Eater');
-fonts.push('Quicksand');
-
+fonts.push('Comfortaa','Orbitron','Eater','Quicksand');
 /**
 *
 *
@@ -337,8 +334,7 @@ function take_input(level)
 					}
 					else
 					{canvas.item(ans_tiles[i]-1).animate('opacity', 0, {onChange: canvas.renderAll.bind(canvas),duration:100});}			
-			};
-		
+			};		
 		canvas.renderAll();
 		canvas.on('mouse:down', function(options) 
 		{	  
@@ -377,11 +373,17 @@ function take_input(level)
 			    	}
 		    	else
 			    	{
+			    		var random_rotation;
+			    		random_rotation=Math.floor(Math.random()*100);
+			    		if(random_rotation%2==0)
+			    			random_rotation=-1;
+			    		else
+			    			random_rotation=+1;
 			    		//correct ans and not previously pressed
 			    		if(done_tiles.indexOf(options.target.tile_number)==-1 && done_tiles.length!=level.no_of_tiles-1)
 			    		{
 				    		turns--;
-				    		options.target.animate('angle', 180, 
+				    		options.target.animate('angle', random_rotation*180, 
 					    		{
 								  onChange: canvas.renderAll.bind(canvas),
 								  duration: 200,
@@ -396,7 +398,7 @@ function take_input(level)
 						if(done_tiles.indexOf(options.target.tile_number)==-1 && done_tiles.length==level.no_of_tiles-1)
 			    		{
 				    		turns--;
-				    		options.target.animate('angle', 180, 
+				    		options.target.animate('angle', random_rotation*180, 
 					    		{
 								  onChange: canvas.renderAll.bind(canvas),
 								  duration: 200,
@@ -424,8 +426,7 @@ function take_input(level)
 			    	}
 		    	if(turns==0)
 		    	{	
-		    		//end
-		    		$(".canvas-container").css('pointer-events','none');    
+		    		//end  
 		    		if(ans_tiles.length==0)
 						setTimeout(function(){ level_show(levels[level.level_no+1]);},2000);
 					else
@@ -451,7 +452,7 @@ function take_input(level)
 		    }
 		  }
 		  //critical ends, pointer events enabled
-		  $(".canvas-container").css('pointer-events','auto');    
+		  if(turns!=0)$(".canvas-container").css('pointer-events','auto');    
 		});	
 	}
 
@@ -485,6 +486,24 @@ function hint_turn(take_input)
 $(function()
 	{
 			// Vars
+		document.getElementById('player').volume=.2;
+		$('#player_button').click(function() 
+		  {
+		  	  $(this).toggleClass("waves-green");
+		  	  $(this).toggleClass("waves-red");
+		      if (audio_playing == false) 
+		      {
+		        document.getElementById('player').play();
+		        audio_playing = true;
+		      } 
+		      else 
+		      {
+		        document.getElementById('player').pause();
+		        audio_playing = false;
+		      }
+		  });
+		document.getElementById('player').play();
+		audio_playing=true;
 		$("#input_res").hide();
 		$("#reload_button").hide();
 		$("#hint_button").hide();
