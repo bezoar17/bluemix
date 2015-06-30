@@ -311,12 +311,14 @@ function take_input(level)
 				//first time intialization
 				turns=level.no_of_tiles;
 				done_tiles=[];
-			}	
+			}
+		$(".canvas-container").css('pointer-events','none');
+		//critical , pointer events disabled
 		for (var i = 0; i < ans_tiles.length; i++) 
 			{
 				if(i==ans_tiles.length-1)
 					{
-						canvas.item(ans_tiles[i]-1).animate('opacity', 0, {onChange: canvas.renderAll.bind(canvas),duration:100,onComplete:function()
+						canvas.item(ans_tiles[i]-1).animate('opacity', 1, {onChange: canvas.renderAll.bind(canvas),duration:100,onComplete:function()
 							{ 
 								for (var i = 0; i < ans_tiles.length; i++) 
 								{
@@ -329,14 +331,19 @@ function take_input(level)
 										$("#hint_button").css({'left':'85%'});
 										$("#hint_button").show();
 									}
+								//critical ends, pointer events enabled
+								$(".canvas-container").css('pointer-events','auto');
 					        }});
 					}
 					else
 					{canvas.item(ans_tiles[i]-1).animate('opacity', 0, {onChange: canvas.renderAll.bind(canvas),duration:100});}			
 			};
+		
 		canvas.renderAll();
 		canvas.on('mouse:down', function(options) 
 		{	  
+		  //critical ends, pointer events disabled
+		  $(".canvas-container").css('pointer-events','none');    
 		  if (options.target) 
 		  {
 		  	if(turns==level.no_of_tiles)
@@ -417,7 +424,8 @@ function take_input(level)
 			    	}
 		    	if(turns==0)
 		    	{	
-		    		//end    
+		    		//end
+		    		$(".canvas-container").css('pointer-events','none');    
 		    		if(ans_tiles.length==0)
 						setTimeout(function(){ level_show(levels[level.level_no+1]);},2000);
 					else
@@ -442,6 +450,8 @@ function take_input(level)
 		    	}
 		    }
 		  }
+		  //critical ends, pointer events enabled
+		  $(".canvas-container").css('pointer-events','auto');    
 		});	
 	}
 
