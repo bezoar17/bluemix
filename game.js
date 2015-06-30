@@ -36,15 +36,15 @@ levels.push(new new_level(3,4,5,8));
 levels.push(new new_level(4,4,5,9));
 levels.push(new new_level(5,4,5,10));
 levels.push(new new_level(6,4,5,11));
-levels.push(new new_level(7,5,7,12));
-levels.push(new new_level(8,5,7,13));
-levels.push(new new_level(9,5,7,14));
-levels.push(new new_level(10,6,7,15));
-levels.push(new new_level(11,6,7,16));
-levels.push(new new_level(12,6,7,17));
-levels.push(new new_level(13,6,7,18));
-levels.push(new new_level(14,6,7,19));
-levels.push(new new_level(15,6,7,20));
+levels.push(new new_level(7,5,6,12));
+levels.push(new new_level(8,5,6,13));
+levels.push(new new_level(9,5,6,14));
+levels.push(new new_level(10,6,6,15));
+levels.push(new new_level(11,6,6,16));
+levels.push(new new_level(12,6,6,17));
+levels.push(new new_level(13,6,6,18));
+levels.push(new new_level(14,6,6,19));
+levels.push(new new_level(15,6,6,20));
 
 var score=0;
 var game_over=0;
@@ -316,7 +316,7 @@ function take_input(level)
 			{
 				if(i==ans_tiles.length-1)
 					{
-						canvas.item(ans_tiles[i]-1).animate('opacity', 0, {onChange: canvas.renderAll.bind(canvas),duration:200,onComplete:function()
+						canvas.item(ans_tiles[i]-1).animate('opacity', 0, {onChange: canvas.renderAll.bind(canvas),duration:100,onComplete:function()
 							{ 
 								for (var i = 0; i < ans_tiles.length; i++) 
 								{
@@ -332,7 +332,7 @@ function take_input(level)
 					        }});
 					}
 					else
-					{canvas.item(ans_tiles[i]-1).animate('opacity', 0, {onChange: canvas.renderAll.bind(canvas),duration:200});}			
+					{canvas.item(ans_tiles[i]-1).animate('opacity', 0, {onChange: canvas.renderAll.bind(canvas),duration:100});}			
 			};
 		canvas.renderAll();
 		canvas.on('mouse:down', function(options) 
@@ -350,14 +350,28 @@ function take_input(level)
 		    	if(pos==-1 && done_tiles.indexOf(options.target.tile_number)==-1)
 			    	{
 			    		//flash a cross
-			    		$("#input_res").fadeIn(300,function(){$("#input_res").fadeOut("fast");});
-			    		// Materialize.toast('Wrong Tile',500);
+			    		// $("#input_res").fadeIn(300,function(){$("#input_res").fadeOut("fast");});
+			    		//change colour of the tile ,thats it.
+			    		options.target.set('fill','#FF4F00');
+								  		fabric.Image.fromURL('cross.png', function(oImg) 
+								  		{
+								  		  oImg.left=options.target.left;
+								  		  oImg.top=options.target.top;
+								  		  oImg.originY='center';
+								  		  oImg.originX='center';
+								  		  oImg.scale(1.2);
+								  		  oImg.selectable=false;
+										  canvas.add(oImg);
+										});
+						//image is not considered an object
+				  		canvas.renderAll();	
+				  		// Materialize.toast('Wrong Tile',500);
 			    		turns--;
 			    	}
 		    	else
 			    	{
 			    		//correct ans and not previously pressed
-			    		if(done_tiles.indexOf(options.target.tile_number)==-1)
+			    		if(done_tiles.indexOf(options.target.tile_number)==-1 && done_tiles.length!=level.no_of_tiles-1)
 			    		{
 				    		turns--;
 				    		options.target.animate('angle', 180, 
@@ -366,6 +380,35 @@ function take_input(level)
 								  duration: 200,
 								  onComplete: function(){options.target.set('fill',tile_colours[random_colour].colour2);
 								  canvas.renderAll();}
+								});
+							canvas.renderAll();
+							done_tiles.push(ans_tiles[pos]);
+							ans_tiles.splice(pos,1);
+						}
+						//last correct tile
+						if(done_tiles.indexOf(options.target.tile_number)==-1 && done_tiles.length==level.no_of_tiles-1)
+			    		{
+				    		turns--;
+				    		options.target.animate('angle', 180, 
+					    		{
+								  onChange: canvas.renderAll.bind(canvas),
+								  duration: 200,
+								  onComplete: function()
+								  	{
+								  		options.target.set('fill','#32CD32');
+								  		fabric.Image.fromURL('check.png', function(oImg) 
+								  		{
+								  		  oImg.left=options.target.left;
+								  		  oImg.top=options.target.top;
+								  		  oImg.originY='center';
+								  		  oImg.originX='center';
+								  		  oImg.scale(1.2);
+								  		  oImg.selectable=false;
+										  canvas.add(oImg);
+										});
+										//image is not considered an object
+								  		canvas.renderAll();
+								  	}
 								});
 							canvas.renderAll();
 							done_tiles.push(ans_tiles[pos]);
